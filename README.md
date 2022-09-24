@@ -11,6 +11,10 @@ Initialize the DB with the following commands:
 > docker compose exec app flask --app myapp db upgrade
 
 
+# Fresh Install (Development)
+> docker compose down -v; docker compose build; docker compose up -d; docker compose logs app -f
+
+
 ## Curl Commands
 
 Download all Verbraucher

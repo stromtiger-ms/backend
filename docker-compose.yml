@@ -8,15 +8,11 @@ services:
       POSTGRES_USER: 'postgres'
       POSTGRES_PASSWORD: 'postgres'
 
-# docker compose down -v; docker compose build; docker compose up -d; docker compose logs app -f
-# docker compose exec app curl localhost:5000/getallverbraucher
-# docker compose exec app python manage.py db migrate
-
   app:
     build:
       context: .
     ports:
-      - 5000:5000
+      - 8080:8080
     environment:
       APP_SETTINGS: 'config.ProductionConfig'
       DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/postgres'
