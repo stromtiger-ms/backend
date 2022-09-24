@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:14.5-alpine
+    environment:
+      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'postgres'
+
+  app:
+    build:
+      context: .
+    ports:
+      - 8080:8080
+    environment:
+      APP_SETTINGS: 'config.ProductionConfig'
+      DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/postgres'
