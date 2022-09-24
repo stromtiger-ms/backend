@@ -107,8 +107,16 @@ def import_csv():
 def get_all_verbraucher():
     try:
         verbraucher = Verbraucher.query.all()
-        json = jsonify([e.serialize() for e in verbraucher])
         return jsonify([e.serialize() for e in verbraucher])
+    except Exception as e:
+        return jsonify(str(e))
+
+@app.route("/stromdaten/<verbraucherId>", methods=['GET'])
+def get_all_stromdaten_zu_verbraucher(verbraucherId):
+    print("verbraucherId: ", verbraucherId)
+    try:
+        stromdaten = Stromlastdaten.query.filter(Stromlastdaten.verbraucherId == verbraucherId)
+        return jsonify([e.serialize() for e in stromdaten])
     except Exception as e:
         return str(e)
 
@@ -128,4 +136,3 @@ def train_ml_model():
 
 if __name__ == '__main__':
     app.run(port=os.environ.get('BACKEND_PORT'))
-    train_ml_model()
