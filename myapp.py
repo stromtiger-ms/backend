@@ -5,6 +5,9 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
+import pandas as pd
+
+from machine_learning.model import MLModel
 
 # instantiate the app
 app = Flask(__name__)
@@ -78,10 +81,8 @@ def import_csv():
         db.session.commit()
         print("Verbraucher added. verbraucher id={}".format(verbraucher.verbraucherId))
         verbraucherId = verbraucher.verbraucherId
-        # return "Verbraucher added. book id={}".format(verbraucher.verbraucherId)
     except Exception as e:
         print(e)
-        # return str(e)
 
     verbrauchsdaten = data['verbrauchsdaten']
     for datum in verbrauchsdaten:
@@ -106,10 +107,25 @@ def import_csv():
 def get_all_verbraucher():
     try:
         verbraucher = Verbraucher.query.all()
+        json = jsonify([e.serialize() for e in verbraucher])
         return jsonify([e.serialize() for e in verbraucher])
+    except Exception as e:
+        return str(e)
+
+@app.route("/train", methods=['GET'])
+def train_ml_model():
+    try:
+        stromdaten = Stromlastdaten.query.all()
+        json = jsonify([e.serialize() for e in stromdaten]).json
+        df = pd.DataFrame(json)
+        dataset = df["kw"]
+        print(dataset)
+        model = MLModel()
+        return jsonify([e.serialize() for e in stromdaten])
     except Exception as e:
         return str(e)
 
 
 if __name__ == '__main__':
     app.run(port=os.environ.get('BACKEND_PORT'))
+    train_ml_model()
