@@ -42,14 +42,13 @@ class Stromlastdaten(db.Model):
     zeit = db.Column(db.String())
     kw = db.Column(db.String)
     verbraucherId = db.Column(db.Integer)
-    isPrediction = db.Column(db.Integer)
+    isPrediction = db.Column(db.BOOLEAN)
 
     def __init__(self, zeit, kw, verbraucherId, isPrediction):
         self.zeit = zeit
         self.kw = kw
         self.verbraucherId = verbraucherId
         self.isPrediction = isPrediction
-
 
     def __repr__(self):
         return '<id {}>'.format(self.stromlastdatenId)
@@ -75,22 +74,22 @@ def import_csv():
         )
         db.session.add(verbraucher)
         db.session.commit()
-        print("Verbraucher added. book id={}".format(verbraucher.verbraucherId))
+        print("Verbraucher added. verbraucher id={}".format(verbraucher.verbraucherId))
         verbraucherId = verbraucher.verbraucherId
         # return "Verbraucher added. book id={}".format(verbraucher.verbraucherId)
     except Exception as e:
         print(e)
-        #return str(e)
+        # return str(e)
 
     verbrauchsdaten = data['verbrauchsdaten']
     for datum in verbrauchsdaten:
         timing = datum['zeit']
         try:
             verbrauchsdatum = Stromlastdaten(
-            zeit=datum['zeit'],
-            kw=datum['kw'],
-            verbraucherId = verbraucherId,
-            isPrediction = False
+                zeit=datum['zeit'],
+                kw=datum['kw'],
+                verbraucherId=verbraucherId,
+                isPrediction=False
             )
             db.session.add(verbrauchsdatum)
             db.session.commit()
@@ -98,7 +97,7 @@ def import_csv():
             # return "Verbraucher added. book id={}".format(verbraucher.verbraucherId)
         except Exception as e:
             print(e)
-
+    return "Verbraucher und Stromlastdaten in DB gespeichert"
 
 
 @app.route("/getallverbraucher", methods=['GET'])
